@@ -1,6 +1,10 @@
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+
 import unittest
 
-from block_markdown import BlockType, block_to_block_type, markdown_to_blocks, markdown_to_html_node
+from block_markdown import BlockType, block_to_block_type, markdown_to_blocks, markdown_to_html_node, extract_title
 
 class TestBlockMarkdown(unittest.TestCase):
 
@@ -298,7 +302,31 @@ the **same** even with inline stuff
         self.assertEqual(
             html,
             "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
-        )        
+        )
+    
+    def test_extract_title(self):
+        md = "# Hello"
+        title = extract_title(md)
+        self.assertEqual(title, "Hello")
+
+    def test_extract_title_multiline(self):
+        md = """
+Hello
+Hello!!!
+# Helllllllooooo
+"""
+        title = extract_title(md)
+        self.assertEqual(title, "Helllllllooooo")
+    
+    def test_invalid_extract_title_no_discernable_h1(self):
+        md = "#Hello"
+        with self.assertRaises(Exception):
+            extract_title(md)
+    
+    def test_invalid_extract_title_no_hashtag(self):
+        md = "Hello"
+        with self.assertRaises(Exception):
+            extract_title(md)
     
 if __name__ == "__main__":
     unittest.main()

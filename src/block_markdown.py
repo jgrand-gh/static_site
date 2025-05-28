@@ -20,6 +20,15 @@ class BlockType(Enum):
     UNORDERED_LIST = "unordered_list"
     ORDERED_LIST = "ordered_list"
 
+def extract_title(markdown):
+    markdown = textwrap.dedent(markdown)
+    markdown = markdown.split("\n")
+
+    for node in markdown:
+        if node.startswith("# "):
+            return node[2:].strip()
+    raise Exception("No h1 header provided, cannot extract title")
+
 def markdown_to_blocks(markdown):
     markdown = textwrap.dedent(markdown)
     markdown_nodes = markdown.split("\n\n")

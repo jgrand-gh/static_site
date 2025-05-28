@@ -1,7 +1,11 @@
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+
 import unittest
 
-from src.textnode import TextNode, TextType
-from src.htmlnode import LeafNode
+from textnode import TextNode, TextType
+from htmlnode import LeafNode
 
 
 class TestTextNode(unittest.TestCase):

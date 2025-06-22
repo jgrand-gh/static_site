@@ -1,8 +1,14 @@
 import os
 import shutil
 
+from pathlib import Path
 from block_markdown import extract_title, markdown_to_html_node
-from textnode import *
+
+
+dir_static = "static"
+dir_public = "public"
+dir_content = "content"
+template_file = "template.html"
 
 def prepare_directory(source, destination):
     if not os.path.exists(source) or os.listdir(source) == []:
@@ -49,9 +55,19 @@ def generate_page(from_path, template_path, dest_path):
     with open(dest_path, 'w') as file:
         file.write(new_page)
     
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    for node in os.listdir(dir_path_content):
+        source_path = os.path.join(dir_path_content, node)
+        dest_path = os.path.join(dest_dir_path, node)
+        if os.path.isfile(source_path):
+            dest_path = Path(dest_path).with_suffix(".html")
+            generate_page(source_path, template_path, dest_path)
+        else:
+            generate_pages_recursive(source_path, template_path, dest_path)
 
 def main():
-    prepare_directory("static", "public")
-    generate_page("content/index.md", "template.html", "public/index.html")
+    prepare_directory(dir_static, dir_public)
+    generate_pages_recursive(dir_content, template_file, dir_public)
 
-main()
+if __name__ == "__main__":
+    main()

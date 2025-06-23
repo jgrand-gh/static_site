@@ -6,7 +6,7 @@ from block_markdown import extract_title, markdown_to_html_node
 
 
 dir_static = "static"
-dir_docs = "docs"
+dir_public = "docs"
 dir_content = "content"
 template_file = "template.html"
 
@@ -69,12 +69,13 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, bas
         else:
             generate_pages_recursive(source_path, template_path, dest_path, basepath)
 
-def main(basepath="/"):
+def main():
+    basepath = "/"
     if len(sys.argv) > 1:
         basepath = sys.argv[1]
 
-    prepare_directory(dir_static, dir_docs)
-    generate_pages_recursive(dir_content, template_file, dir_docs, basepath)
+    prepare_directory(dir_static, dir_public)
+    generate_pages_recursive(dir_content, template_file, dir_public, basepath)
 
 if __name__ == "__main__":
     main()

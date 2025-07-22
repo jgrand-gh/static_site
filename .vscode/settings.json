@@ -1,9 +1,0 @@
-{
-    "python.languageServer": "Pylance",
-    "python.analysis.fixAll": [
-        "source.unusedImports"
-    ],
-    "python.analysis.extraPaths": [
-        "./src"
-    ]
-}

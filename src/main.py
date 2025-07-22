@@ -5,10 +5,11 @@ from pathlib import Path
 from block_markdown import extract_title, markdown_to_html_node
 
 
-dir_static = "static"
-dir_public = "docs"
-dir_content = "content"
-template_file = "template.html"
+DIR_STATIC = "static"
+DIR_DOCS = "docs" # for GitHub Pages deployment
+DIR_PUBLIC = "public" # for local deployment
+DIR_CONTENT = "content"
+TEMPLATE_FILE = "template.html"
 
 def prepare_directory(source, destination):
     if not os.path.exists(source) or os.listdir(source) == []:
@@ -70,12 +71,31 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, bas
             generate_pages_recursive(source_path, template_path, dest_path, basepath)
 
 def main():
+    # Usage: python3 src/main.py [local|github] [basepath]
+    output_dir = DIR_PUBLIC  # Default to local deployment
     basepath = "/"
-    if len(sys.argv) > 1:
-        basepath = sys.argv[1]
 
-    prepare_directory(dir_static, dir_public)
-    generate_pages_recursive(dir_content, template_file, dir_public, basepath)
+    if len(sys.argv) > 1:
+        arg = sys.argv[1].lower()
+        if arg == "github":
+            output_dir = DIR_DOCS
+            print("Deploying for Github.")
+        elif arg == "local":
+            output_dir = DIR_PUBLIC
+            print("Deploying locally.")
+        else:
+            print(f"Unknown deployment type '{arg}'. Defaulting to local deployment (outputs to '{DIR_PUBLIC}').")
+    else:
+        print("No deployment type specified. Defaulting to local deployment (outputs to 'public').")
+
+    if len(sys.argv) > 2:
+        basepath = sys.argv[2]
+        print(f"Using '{basepath}' as the basepath.")
+    else:
+        print("No basepath specified, defaulting to '/' for the path.")
+
+    prepare_directory(DIR_STATIC, output_dir)
+    generate_pages_recursive(DIR_CONTENT, TEMPLATE_FILE, output_dir, basepath)
 
 if __name__ == "__main__":
     main()
